@@ -1,6 +1,6 @@
 import { Fund } from "../types/fund";
 
-const BACKEND_URL = "http://10.126.222.196:3000"; // Android emülatör için
+const BACKEND_URL = "http://10.30.29.26:3000"; // Android emülatör için
 
 export const getFunds = async (): Promise<Fund[]> => {
   const response = await fetch(`${BACKEND_URL}/api/funds`);
