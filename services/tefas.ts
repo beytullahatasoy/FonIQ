@@ -1,23 +1,16 @@
-import { Fund, RiskLevel } from "../types/fund";
+import { Fund } from "../types/fund";
 
-const mapRisk = (score: number): RiskLevel => {
-  if (score <= 2) return "Düşük";
-  if (score <= 4) return "Orta";
-  return "Yüksek";
-};
+const BACKEND_URL = "http://10.126.222.196:3000"; // Android emülatör için
 
 export const getFunds = async (): Promise<Fund[]> => {
-  const response = await fetch(`https://www.tefas.gov.tr/Api/DB/BindFundList`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Referer: "https://www.tefas.gov.tr/",
-      "X-Requested-With": "XMLHttpRequest",
-    },
-    body: "fontip=YAT",
-  });
+  const response = await fetch(`${BACKEND_URL}/api/funds`);
+  const data = await response.json();
+  return data;
+};
 
-  const text = await response.text();
-  console.log("TEFAS raw:", text.slice(0, 500));
-  return [];
+export const getFundByCode = async (code: string): Promise<Fund | null> => {
+  const response = await fetch(`${BACKEND_URL}/api/funds/${code}`);
+  if (!response.ok) return null;
+  const data = await response.json();
+  return data;
 };
