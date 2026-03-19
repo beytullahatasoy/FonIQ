@@ -45,13 +45,16 @@ export default function KesfetScreen() {
 
   useEffect(() => {
     const q = search.toLowerCase();
+
     let result = funds.filter(
       (f) =>
         f.code.toLowerCase().includes(q) || f.name.toLowerCase().includes(q),
     );
+
     if (activeCategory !== "Tümü") {
       result = result.filter((f) => f.category === activeCategory);
     }
+
     setFiltered(result);
   }, [search, funds, activeCategory]);
 
@@ -73,78 +76,80 @@ export default function KesfetScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>FonIQ</Text>
-        <Text style={styles.headerSubtitle}>
-          {funds.length} fon listeleniyor
-        </Text>
-      </View>
+      {/* Header Bloğu */}
+      <View style={styles.headerBlock}>
+        <View style={styles.heroRow}>
+          <View>
+            <Text style={styles.logo}>FonIQ</Text>
+          </View>
 
-      {/* Arama */}
-      <View style={styles.searchContainer}>
-        <Text style={styles.searchIcon}>🔍</Text>
-        <TextInput
-          style={styles.search}
-          placeholder="Fon ara (kod veya isim)..."
-          value={search}
-          onChangeText={setSearch}
-          placeholderTextColor={Colors.textSecondary}
-        />
-        {search.length > 0 && (
-          <TouchableOpacity onPress={() => setSearch("")}>
-            <Text style={styles.clearIcon}>✕</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+          <View style={styles.sloganContainer}>
+            <Text style={styles.sloganLabel}>Yapay Zeka Destekli</Text>
 
-      {/* Kategori Filtreleri */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoryScroll}
-        contentContainerStyle={styles.categoryContainer}
-      >
-        {CATEGORIES.map((cat) => (
-          <TouchableOpacity
-            key={cat}
-            style={[
-              styles.categoryChip,
-              activeCategory === cat && styles.categoryChipActive,
-            ]}
-            onPress={() => setActiveCategory(cat)}
-          >
-            <Text
-              style={[
-                styles.categoryText,
-                activeCategory === cat && styles.categoryTextActive,
-              ]}
+            <Text style={styles.slogan}>Akıllı fon analizi</Text>
+          </View>
+        </View>
+
+        <View style={styles.searchContainer}>
+          <Text style={styles.searchIcon}>⌕</Text>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Fon kodu veya adı..."
+            value={search}
+            onChangeText={setSearch}
+            placeholderTextColor="#94A3B8"
+          />
+          {search.length > 0 && (
+            <TouchableOpacity
+              onPress={() => setSearch("")}
+              style={styles.clearBtn}
+              activeOpacity={0.7}
             >
-              {cat}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+              <Text style={styles.clearIcon}>✕</Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-      {/* Sonuç sayısı */}
-      {(search || activeCategory !== "Tümü") && (
-        <Text style={styles.resultCount}>{filtered.length} sonuç bulundu</Text>
-      )}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryContainer}
+        >
+          {CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat;
 
-      {/* Fon Listesi */}
+            return (
+              <TouchableOpacity
+                key={cat}
+                style={[styles.chip, isActive && styles.chipActive]}
+                onPress={() => setActiveCategory(cat)}
+                activeOpacity={0.85}
+              >
+                <Text
+                  style={[styles.chipText, isActive && styles.chipTextActive]}
+                >
+                  {cat}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      {/* Liste */}
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.code}
         renderItem={({ item }) => (
           <FundCard
             fund={item}
-            onPress={(fund) => router.push(`/fund/${fund.code}`)}
+            onPress={(f) => router.push(`/fund/${f.code}`)}
           />
         )}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>🔎</Text>
+          <View style={styles.empty}>
             <Text style={styles.emptyText}>Sonuç bulunamadı</Text>
           </View>
         }
@@ -156,107 +161,146 @@ export default function KesfetScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#F8FAFC",
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: Colors.primary,
-    letterSpacing: -0.5,
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 16,
-    marginBottom: 12,
-    paddingHorizontal: 14,
-    backgroundColor: Colors.card,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    height: 48,
-  },
-  searchIcon: {
-    fontSize: 16,
-    marginRight: 8,
-  },
-  search: {
-    flex: 1,
-    fontSize: 14,
-    color: Colors.text,
-  },
-  clearIcon: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    padding: 4,
-  },
-  categoryScroll: {
-    maxHeight: 44,
-    marginBottom: 8,
-  },
-  categoryContainer: {
-    paddingHorizontal: 16,
-    gap: 8,
-    alignItems: "center",
-  },
-  categoryChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    backgroundColor: Colors.card,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  categoryChipActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  categoryText: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    fontWeight: "500",
-  },
-  categoryTextActive: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  resultCount: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-    paddingHorizontal: 20,
-    marginBottom: 8,
-  },
+
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#F8FAFC",
   },
+
   error: {
     color: Colors.danger,
-    fontSize: 16,
+    fontSize: 14,
   },
-  emptyContainer: {
+
+  headerBlock: {
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
+  },
+
+  heroRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginBottom: 10,
+  },
+
+  logo: {
+    fontSize: 26,
+    fontWeight: "700",
+    letterSpacing: -0.5,
+    color: "#111827",
+    marginTop: 4,
+    alignItems: "center",
+  },
+
+  sloganContainer: {
+    alignItems: "flex-end",
+    paddingBottom: 4,
+  },
+
+  sloganLabel: {
+    fontSize: 10,
+    color: "#CBD5E1",
+    fontWeight: "500",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    marginBottom: 0.5,
+  },
+
+  slogan: {
+    fontSize: 12,
+    color: "#94A3B8",
+    fontWeight: "500",
+    textAlign: "right",
+    lineHeight: 17,
+  },
+
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+
+    backgroundColor: "#F8FAFC",
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    height: 50,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+  },
+
+  searchIcon: {
+    fontSize: 18,
+    color: "#94A3B8",
+    marginRight: 10,
+  },
+
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: "#0F172A",
+  },
+
+  clearBtn: {
+    padding: 4,
+    marginLeft: 6,
+  },
+
+  clearIcon: {
+    fontSize: 12,
+    color: "#94A3B8",
+  },
+
+  categoryContainer: {
+    gap: 8,
+    alignItems: "center",
+    paddingRight: 8,
+  },
+
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+
+  chipActive: {
+    backgroundColor: "#0F172A",
+    borderColor: "#0F172A",
+  },
+
+  chipText: {
+    fontSize: 13,
+    color: "#64748B",
+    fontWeight: "500",
+  },
+
+  chipTextActive: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+  },
+
+  listContent: {
+    paddingTop: 10,
+    paddingBottom: 110,
+  },
+
+  empty: {
     alignItems: "center",
     paddingTop: 60,
   },
-  emptyIcon: {
-    fontSize: 40,
-    marginBottom: 12,
-  },
+
   emptyText: {
-    fontSize: 15,
-    color: Colors.textSecondary,
+    fontSize: 14,
+    color: "#94A3B8",
   },
 });

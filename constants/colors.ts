@@ -1,15 +1,21 @@
 export const Colors = {
-  primary: "#1B4F9B", // Ana mavi — butonlar, başlıklar
-  secondary: "#2E75B6", // İkincil mavi — alt başlıklar
-  success: "#27AE60", // Yeşil — pozitif getiri
-  danger: "#E74C3C", // Kırmızı — negatif getiri
-  warning: "#F39C12", // Turuncu — orta risk
-  background: "#F5F7FA", // Sayfa arka planı
-  card: "#FFFFFF", // Kart arka planı
-  text: "#222222", // Ana yazı
-  textSecondary: "#888888", // İkincil yazı
-  border: "#E0E0E0", // Kenarlık
-  low: "#27AE60", // Düşük risk rengi
-  medium: "#F39C12", // Orta risk rengi
-  high: "#E74C3C", // Yüksek risk rengi
+  primary: "#1A56DB",
+  primaryLight: "#EEF2FF",
+  secondary: "#6B7280",
+  success: "#059669",
+  successLight: "#ECFDF5",
+  danger: "#DC2626",
+  dangerLight: "#FEF2F2",
+  warning: "#D97706",
+  warningLight: "#FFFBEB",
+  background: "#F9FAFB",
+  card: "#FFFFFF",
+  text: "#111827",
+  textSecondary: "#6B7280",
+  textTertiary: "#9CA3AF",
+  border: "#F3F4F6",
+  borderMedium: "#E5E7EB",
+  low: "#059669",
+  medium: "#D97706",
+  high: "#DC2626",
 };

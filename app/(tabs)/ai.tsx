@@ -10,7 +10,7 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
-import { Colors } from "../../constants/colors";
+import { Feather } from "@expo/vector-icons";
 import { Config } from "../../constants/config";
 
 type Message = {
@@ -68,13 +68,15 @@ export default function AIScreen() {
       const aiText =
         data?.candidates?.[0]?.content?.parts?.[0]?.text || "Yanıt alınamadı.";
 
-      const aiMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        text: aiText,
-        isUser: false,
-      };
+      const cleaned = aiText
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/#{1,3} /g, "");
 
-      setMessages((prev) => [...prev, aiMsg]);
+      setMessages((prev) => [
+        ...prev,
+        { id: (Date.now() + 1).toString(), text: cleaned, isUser: false },
+      ]);
       setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 100);
     } catch {
       setMessages((prev) => [
@@ -96,120 +98,255 @@ export default function AIScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={90}
     >
+      {/* Header */}
+      <View style={styles.headerBlock}>
+        <View style={styles.headerLeft}>
+          <Text style={styles.pageTitle}>AI Asistan</Text>
+          <Text style={styles.pageSubtitle}>
+            Fon analizi için sorularını sor
+          </Text>
+        </View>
+        <View style={styles.aiIndicator}>
+          <View style={styles.aiDot} />
+          <Text style={styles.aiStatus}>Çevrimiçi</Text>
+        </View>
+      </View>
+
+      {/* Mesajlar */}
       <FlatList
         ref={listRef}
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View
-            style={[
-              styles.bubble,
-              item.isUser ? styles.userBubble : styles.aiBubble,
-            ]}
+            style={[styles.messageRow, item.isUser && styles.messageRowUser]}
           >
-            <Text
+            {!item.isUser && (
+              <View style={styles.avatar}>
+                <Feather name="zap" size={12} color="#0F172A" />
+              </View>
+            )}
+            <View
               style={[
-                styles.bubbleText,
-                item.isUser ? styles.userText : styles.aiText,
+                styles.bubble,
+                item.isUser ? styles.bubbleUser : styles.bubbleAI,
               ]}
             >
-              {item.text}
-            </Text>
+              <Text
+                style={[
+                  styles.bubbleText,
+                  item.isUser ? styles.bubbleTextUser : styles.bubbleTextAI,
+                ]}
+              >
+                {item.text}
+              </Text>
+            </View>
           </View>
         )}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={styles.messageList}
         onContentSizeChange={() =>
           listRef.current?.scrollToEnd({ animated: true })
         }
+        showsVerticalScrollIndicator={false}
       />
 
+      {/* Yazıyor göstergesi */}
       {loading && (
-        <View style={styles.loadingRow}>
-          <ActivityIndicator size="small" color={Colors.primary} />
-          <Text style={styles.loadingText}>AI yazıyor...</Text>
+        <View style={styles.typingRow}>
+          <View style={styles.avatar}>
+            <Feather name="zap" size={12} color="#0F172A" />
+          </View>
+          <View style={styles.typingBubble}>
+            <ActivityIndicator size="small" color="#94A3B8" />
+            <Text style={styles.typingText}>Yanıt yazılıyor...</Text>
+          </View>
         </View>
       )}
 
-      <View style={styles.inputRow}>
-        <TextInput
-          style={styles.input}
-          value={input}
-          onChangeText={setInput}
-          placeholder="Soru sor..."
-          placeholderTextColor={Colors.textSecondary}
-          multiline
-          onSubmitEditing={sendMessage}
-        />
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            !input.trim() && styles.sendButtonDisabled,
-          ]}
-          onPress={sendMessage}
-          disabled={!input.trim() || loading}
-        >
-          <Text style={styles.sendButtonText}>➤</Text>
-        </TouchableOpacity>
+      {/* Input */}
+      <View style={styles.inputWrapper}>
+        <View style={styles.inputRow}>
+          <TextInput
+            style={styles.input}
+            value={input}
+            onChangeText={setInput}
+            placeholder="Bir şeyler sor..."
+            placeholderTextColor="#94A3B8"
+            multiline
+          />
+          <TouchableOpacity
+            style={[styles.sendBtn, !input.trim() && styles.sendBtnDisabled]}
+            onPress={sendMessage}
+            disabled={!input.trim() || loading}
+          >
+            <Feather
+              name="send"
+              size={16}
+              color={input.trim() ? "#FFFFFF" : "#94A3B8"}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  list: { padding: 16, gap: 12 },
-  bubble: { maxWidth: "80%", padding: 12, borderRadius: 16 },
-  userBubble: {
-    alignSelf: "flex-end",
-    backgroundColor: Colors.primary,
-    borderBottomRightRadius: 4,
+  container: { flex: 1, backgroundColor: "#F8FAFC" },
+
+  headerBlock: {
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  aiBubble: {
-    alignSelf: "flex-start",
-    backgroundColor: Colors.card,
-    borderBottomLeftRadius: 4,
-    borderWidth: 1,
-    borderColor: Colors.border,
+  headerLeft: {},
+  pageTitle: {
+    fontSize: 26,
+    fontWeight: "800",
+    color: "#0F172A",
+    letterSpacing: -0.8,
   },
-  bubbleText: { fontSize: 14, lineHeight: 20 },
-  userText: { color: "#fff" },
-  aiText: { color: Colors.text },
-  loadingRow: {
+  pageSubtitle: {
+    fontSize: 13,
+    color: "#94A3B8",
+    marginTop: 3,
+  },
+  aiIndicator: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    gap: 8,
-  },
-  loadingText: { color: Colors.textSecondary, fontSize: 13 },
-  inputRow: {
-    flexDirection: "row",
-    padding: 12,
-    gap: 8,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
-    backgroundColor: Colors.card,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: Colors.background,
+    gap: 6,
+    backgroundColor: "#F0FDF4",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    color: Colors.text,
-    fontSize: 14,
-    maxHeight: 100,
-    borderWidth: 1,
-    borderColor: Colors.border,
   },
-  sendButton: {
-    width: 44,
-    height: 44,
-    backgroundColor: Colors.primary,
-    borderRadius: 22,
+  aiDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#059669",
+  },
+  aiStatus: {
+    fontSize: 11,
+    color: "#059669",
+    fontWeight: "600",
+  },
+
+  messageList: {
+    padding: 16,
+    gap: 12,
+    paddingBottom: 8,
+  },
+  messageRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 8,
+    marginBottom: 8,
+  },
+  messageRowUser: {
+    flexDirection: "row-reverse",
+  },
+  avatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#F1F5F9",
     justifyContent: "center",
     alignItems: "center",
   },
-  sendButtonDisabled: { backgroundColor: Colors.border },
-  sendButtonText: { color: "#fff", fontSize: 18 },
+  bubble: {
+    maxWidth: "78%",
+    padding: 12,
+    borderRadius: 16,
+  },
+  bubbleUser: {
+    backgroundColor: "#0F172A",
+    borderBottomRightRadius: 4,
+  },
+  bubbleAI: {
+    backgroundColor: "#FFFFFF",
+    borderBottomLeftRadius: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  bubbleText: {
+    fontSize: 14,
+    lineHeight: 21,
+  },
+  bubbleTextUser: {
+    color: "#FFFFFF",
+  },
+  bubbleTextAI: {
+    color: "#1E293B",
+  },
+
+  typingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  typingBubble: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 16,
+    borderBottomLeftRadius: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  typingText: {
+    fontSize: 13,
+    color: "#94A3B8",
+  },
+
+  inputWrapper: {
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#F1F5F9",
+    padding: 12,
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 10,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: 14,
+    color: "#0F172A",
+    maxHeight: 100,
+    paddingVertical: 4,
+  },
+  sendBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#0F172A",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sendBtnDisabled: {
+    backgroundColor: "#F1F5F9",
+  },
 });
