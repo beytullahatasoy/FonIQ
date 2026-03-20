@@ -7,8 +7,8 @@ FonIQ, Türk yatırımcıların TEFAS fonlarını keşfetmesini, karşılaştır
 ## Ekran Görüntüleri
 
 <p align="center">
-  <img src="ssApp/1.jpeg" width="22%" />
   <img src="ssApp/2.jpeg" width="22%" />
+  <img src="ssApp/1.jpeg" width="22%" />
   <img src="ssApp/3.jpeg" width="22%" />
   <img src="ssApp/4.jpeg" width="22%" />
 </p>
