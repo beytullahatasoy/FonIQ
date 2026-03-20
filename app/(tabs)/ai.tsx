@@ -96,7 +96,7 @@ export default function AIScreen() {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={90}
+      keyboardVerticalOffset={0}
     >
       {/* Header */}
       <View style={styles.headerBlock}>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   messageList: {
     padding: 16,
     gap: 12,
-    paddingBottom: 8,
+    paddingBottom: 16,
   },
   messageRow: {
     flexDirection: "row",
@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#F1F5F9",
     padding: 12,
+    paddingBottom: 16,
   },
   inputRow: {
     flexDirection: "row",
