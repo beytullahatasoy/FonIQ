@@ -1,10 +1,10 @@
-# FonIQ — Akıllı Fon Analizi
+# FonIQ — Smart Fund Analysis
 
-FonIQ, Türk yatırımcıların TEFAS fonlarını keşfetmesini, karşılaştırmasını ve yapay zeka destekli Türkçe yorum almasını sağlayan mobil uygulamadır.
+FonIQ is a mobile application that allows Turkish investors to explore, compare TEFAS funds, and receive AI-powered Turkish insights.
 
 ---
 
-## Ekran Görüntüleri
+## Screenshots
 
 <p align="center">
   <img src="ssApp/2.jpeg" width="22%" />
@@ -15,61 +15,61 @@ FonIQ, Türk yatırımcıların TEFAS fonlarını keşfetmesini, karşılaştır
 
 ---
 
-## Özellikler
+## Features
 
-- **Fon Keşfi** — 20+ yatırım fonunu listele, kategori ve isme göre filtrele
-- **Fon Detayı** — 1 aylık, 3 aylık, 6 aylık ve 1 yıllık getiri performansı
-- **Fon Karşılaştırma** — 2 fonu yan yana karşılaştır, hangisinin daha iyi performans gösterdiğini gör
-- **AI Yorumu** — Gemini AI ile Türkçe, kişiselleştirilmiş fon analizi al
-- **AI Sohbet** — Yatırım fonları hakkında her şeyi sohbet şeklinde sor
+- **Fund Discovery** — List 20+ investment funds, filter by category and name  
+- **Fund Details** — 1-month, 3-month, 6-month, and 1-year return performance  
+- **Fund Comparison** — Compare 2 funds side by side and see which performs better  
+- **AI Insight** — Get personalized Turkish fund analysis with Gemini AI  
+- **AI Chat** — Ask anything about investment funds in a conversational format  
 
 ---
 
-## Teknoloji Stack
+## Tech Stack
 
-| Katman     | Teknoloji           |
+| Layer      | Technology          |
 | ---------- | ------------------- |
-| Mobil      | React Native + Expo |
+| Mobile     | React Native + Expo |
 | Navigation | Expo Router         |
 | State      | Zustand             |
 | AI         | Google Gemini API   |
 | Backend    | Node.js + Express   |
-| Veri       | Mock TEFAS verisi   |
+| Data       | Mock TEFAS data     |
 
 ---
 
-## Kurulum
+## Setup
 
-### Gereksinimler
+### Requirements
 
-- Node.js 18+
-- Expo Go (mobil cihaz) veya Android Emülatör
-- Google Gemini API Key
+- Node.js 18+  
+- Expo Go (mobile device) or Android Emulator  
+- Google Gemini API Key  
 
-### 1. Projeyi Klonla
+### 1. Clone the Project
 
 ```bash
 git clone https://github.com/kullanici-adi/foniq.git
 cd foniq
 ```
 
-### 2. Bağımlılıkları Yükle
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Ortam Değişkenlerini Ayarla
+### 3. Set Environment Variables
 
-Proje kökünde `.env.local` dosyası oluştur:
+Create a `.env.local` file in the project root:
 
 ```
-EXPO_PUBLIC_GEMINI_API_KEY=senin_gemini_api_key
+EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
 ```
 
-Gemini API key almak için: [aistudio.google.com](https://aistudio.google.com)
+To get a Gemini API key: [aistudio.google.com](https://aistudio.google.com)
 
-### 4. Backend'i Başlat
+### 4. Start Backend
 
 ```bash
 cd backend
@@ -77,9 +77,9 @@ npm install
 node server.js
 ```
 
-Backend `http://localhost:3000` adresinde çalışır.
+Backend runs at `http://localhost:3000`.
 
-### 5. Uygulamayı Başlat
+### 5. Start the App
 
 ```bash
 cd ..
@@ -88,28 +88,28 @@ npx expo start
 
 ---
 
-## Proje Yapısı
+## Project Structure
 
 ```
 FonIQ/
 ├── app/
 │   ├── (tabs)/
-│   │   ├── index.tsx        # Keşfet ekranı
-│   │   ├── compare.tsx      # Karşılaştır ekranı
-│   │   └── ai.tsx           # AI Sohbet ekranı
+│   │   ├── index.tsx        # Explore screen
+│   │   ├── compare.tsx      # Comparison screen
+│   │   └── ai.tsx           # AI Chat screen
 │   └── fund/
-│       └── [code].tsx       # Fon Detay ekranı
+│       └── [code].tsx       # Fund Detail screen
 ├── components/
 │   ├── FundCard.tsx
 │   ├── FundChart.tsx
 │   ├── RiskBadge.tsx
 │   └── ChatBubble.tsx
 ├── services/
-│   ├── tefas.ts             # Fon veri servisi
-│   └── gemini.ts            # AI servis
+│   ├── tefas.ts             # Fund data service
+│   └── gemini.ts            # AI service
 ├── store/
-│   ├── useProfileStore.ts   # Kullanıcı profili
-│   └── useCompareStore.ts   # Karşılaştırma state
+│   ├── useProfileStore.ts   # User profile
+│   └── useCompareStore.ts   # Comparison state
 ├── constants/
 │   ├── colors.ts
 │   └── config.ts
@@ -121,38 +121,38 @@ FonIQ/
 
 ---
 
-## Ekran Açıklamaları
+## Screen Descriptions
 
-### Keşfet
+### Explore
 
-Tüm fonları listeler. Kategori chip'leri (Hisse Senedi, Karma, Tahvil, Altın, Para Piyasası) ile filtrelenebilir. Arama çubuğu ile fon kodu veya ismine göre arama yapılabilir.
+Lists all funds. Can be filtered using category chips (Equity, Balanced, Bond, Gold, Money Market). Search bar allows searching by fund code or name.
 
-### Fon Detayı
+### Fund Detail
 
-Seçilen fonun getiri performansını (1A, 3A, 6A, 1Y), portföy büyüklüğünü ve yatırımcı sayısını gösterir. AI yorumu butonu ile Gemini'den Türkçe analiz alınabilir.
+Displays the selected fund’s return performance (1M, 3M, 6M, 1Y), portfolio size, and number of investors. AI insight button provides Turkish analysis via Gemini.
 
-### Karşılaştır
+### Compare
 
-İki fon yan yana karşılaştırılır. Daha iyi performans gösteren metrik yeşil ile öne çıkar.
+Two funds are compared side by side. The better-performing metric is highlighted in green.
 
-### AI Sohbet
+### AI Chat
 
-Gemini AI ile sohbet formatında yatırım fonu soruları sorulabilir. Tamamen Türkçe yanıt verir.
-
----
-
-## Geliştirme Notları
-
-- TEFAS API CORS kısıtlaması nedeniyle direkt mobil erişim mümkün değildir. Bu nedenle Express.js proxy backend kullanılmaktadır.
-- Şu an mock veri kullanılmaktadır. Backend değiştirilerek gerçek TEFAS verisi entegre edilebilir.
-- Gemini API Free Tier günlük 1500 istek limitine sahiptir.
+Ask questions about investment funds in a chat format using Gemini AI. Responses are fully in Turkish.
 
 ---
 
-## Lisans
+## Development Notes
 
-MIT License — Serbestçe kullanılabilir ve geliştirilebilir.
+- Direct mobile access to TEFAS API is not possible due to CORS restrictions. Therefore, an Express.js proxy backend is used.  
+- Currently, mock data is used. Real TEFAS data can be integrated by modifying the backend.  
+- Gemini API Free Tier has a daily limit of 1500 requests.  
 
 ---
 
-_FonIQ — Portföy projesi olarak geliştirilmiştir._
+## License
+
+MIT License — Freely usable and modifiable.
+
+---
+
+_FonIQ — Developed as a portfolio project._
